@@ -1,4 +1,3 @@
-
 name: CI
 on:
   push:
@@ -19,9 +18,15 @@ jobs:
       # ── Install ──────────────────────────────────────────────────────────
       - name: Install dependencies
         run: |
-        pip install -r requirements.txt -r requirements-dev.txt
-        pip install pytest
-        # Jenkins installs BOTH files; your current yml only installs requirements-dev.txt
+          pip install --upgrade pip
+          pip install flask==3.0.3 \
+                      gunicorn==22.0.0 \
+                      pytest==8.2.0 \
+                      ruff==0.5.0 \
+                      bandit==1.7.9 \
+                      pip-audit==2.7.3 \
+                      semgrep==1.78.0 \
+                      cyclonedx-bom==4.4.3
 
       # ── Test ─────────────────────────────────────────────────────────────
       - name: Test
@@ -61,4 +66,3 @@ jobs:
       # ── Build Docker Image ───────────────────────────────────────────────
       - name: Build Image
         run: docker build -t flask-api:${{ github.run_number }} .
-        # github.run_number is the GitHub Actions equivalent of Jenkins' BUILD_NUMBER
