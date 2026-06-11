@@ -16,3 +16,7 @@ def greet():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+# test bad code
+def bad_function():
+    user_input = "test"
+    eval(user_input)
