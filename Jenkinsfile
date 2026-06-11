@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout') { steps { checkout scm } }
     stage('Setup') {
-      steps { sh 'pip install -r requirements-dev.txt --break-system-packages' }
+      steps { sh 'pip install -r requirements.txt -r requirements-dev.txt --break-system-packages' }
     }
     stage('Test')  { steps { sh 'python3.13 -m pytest tests/ -q' } }
     stage('Lint')  { steps { sh 'python3.13 -m ruff check .' } }
