@@ -1,0 +1,9 @@
+replicaCount: 1
+image:
+  repository: flask-api
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+service:
+  port: 80
+  targetPort: 5000
+  

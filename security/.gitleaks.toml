@@ -1,0 +1,4 @@
+title = "gitleaks config"
+[allowlist]
+description = "lab test fixtures"
+paths = ['''tests/.*''']

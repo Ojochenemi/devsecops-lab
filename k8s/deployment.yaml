@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: flask-api, namespace: flask-api }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: flask-api } }
+  template:
+    metadata: { labels: { app: flask-api } }
+    spec:
+      containers:
+        - name: flask-api
+          image: flask-api:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 5000 }]
+          readinessProbe:
+            httpGet: { path: /health, port: 5000 }
