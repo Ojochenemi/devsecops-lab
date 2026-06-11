@@ -5,11 +5,11 @@ pipeline {
     stage('Setup') {
       steps { sh 'pip install -r requirements-dev.txt --break-system-packages' }
     }
-    stage('Test')  { steps { sh 'python3 -m pytest -q' } }
-    stage('Lint')  { steps { sh 'python3 -m ruff check .' } }
-    stage('SAST - Bandit')  { steps { sh 'python3 -m bandit -r app/ -f txt' } }
-    stage('SAST - Semgrep') { steps { sh 'python3 -m semgrep --config auto app/' } }
-    stage('SCA - pip-audit') { steps { sh 'python3 -m pip_audit -r requirements.txt' } }
+    stage('Test')  { steps { sh 'python3.13 -m pytest -q' } }
+    stage('Lint')  { steps { sh 'python3.13 -m ruff check .' } }
+    stage('SAST - Bandit')  { steps { sh 'python3.13 -m bandit -r app/ -f txt' } }
+    stage('SAST - Semgrep') { steps { sh 'python3.13 -m semgrep --config auto app/' } }
+    stage('SCA - pip-audit') { steps { sh 'python3.13 -m pip_audit -r requirements.txt' } }
     stage('Secrets - Gitleaks') {
       steps { sh 'docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect --source=/repo -v' }
     }
