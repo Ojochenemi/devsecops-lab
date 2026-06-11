@@ -15,7 +15,7 @@ def greet():
     return jsonify(message=f"{PREFIX}, {name}!")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="127.0.0.1", port=5000)
 # test bad code
 def bad_function():
     user_input = "test"

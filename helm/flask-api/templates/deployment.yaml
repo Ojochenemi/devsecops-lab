@@ -7,10 +7,14 @@ spec:
   template:
     metadata: { labels: { app: flask-api } }
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
         - name: flask-api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports: [{ containerPort: {{ .Values.service.targetPort }} }]
+          securityContext:
+            allowPrivilegeEscalation: false
           readinessProbe:
             httpGet: { path: /health, port: {{ .Values.service.targetPort }} }
