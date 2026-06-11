@@ -5,7 +5,7 @@ pipeline {
     stage('Setup') {
       steps { sh 'pip install -r requirements-dev.txt --break-system-packages' }
     }
-    stage('Test')  { steps { sh 'python3.13 -m pytest -q' } }
+    stage('Test')  { steps { sh 'python3.13 -m pytest tests/ -q' } }
     stage('Lint')  { steps { sh 'python3.13 -m ruff check .' } }
     stage('SAST - Bandit')  { steps { sh 'python3.13 -m bandit -r app/ -f txt' } }
     stage('SAST - Semgrep') { steps { sh 'python3.13 -m semgrep --config auto app/' } }
