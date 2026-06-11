@@ -1,23 +1,62 @@
-```yaml
+
 name: CI
 on:
-  push: { branches: ["**"] }
+  push:
+    branches: ["**"]
   pull_request:
+
 jobs:
   build-test-scan:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - run: pip install -r requirements-dev.txt
-      - run: pytest -q
-      - run: ruff check .
-      - run: bandit -r app/
-      - run: pip-audit -r requirements.txt
-      - name: Gitleaks
+        with:
+          python-version: "3.11"
+
+      # ── Install ──────────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+        # Jenkins installs BOTH files; your current yml only installs requirements-dev.txt
+
+      # ── Test ─────────────────────────────────────────────────────────────
+      - name: Test
+        run: pytest tests/ -q
+
+      # ── Lint ─────────────────────────────────────────────────────────────
+      - name: Lint
+        run: ruff check .
+
+      # ── SAST – Bandit ────────────────────────────────────────────────────
+      - name: SAST - Bandit
+        run: bandit -r app/ -f txt --exit-zero
+
+      # ── SAST – Semgrep ───────────────────────────────────────────────────
+      - name: SAST - Semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: auto
+
+      # ── SCA – pip-audit ──────────────────────────────────────────────────
+      - name: SCA - pip-audit
+        run: pip-audit -r requirements.txt
+
+      # ── Secrets – Gitleaks ───────────────────────────────────────────────
+      - name: Secrets - Gitleaks
         uses: gitleaks/gitleaks-action@v2
-      - name: Trivy FS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── FS Scan – Trivy ──────────────────────────────────────────────────
+      - name: FS Scan - Trivy
         uses: aquasecurity/trivy-action@master
-        with: { scan-type: "fs", scan-ref: "." }
-```
+        with:
+          scan-type: fs
+          scan-ref: .
+
+      # ── Build Docker Image ───────────────────────────────────────────────
+      - name: Build Image
+        run: docker build -t flask-api:${{ github.run_number }} .
+        # github.run_number is the GitHub Actions equivalent of Jenkins' BUILD_NUMBER
