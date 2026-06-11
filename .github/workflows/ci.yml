@@ -18,8 +18,9 @@ jobs:
 
       # ── Install ──────────────────────────────────────────────────────────
       - name: Install dependencies
-        run: pip install -r requirements.txt -r requirements-dev.txt
-        run: pip install pytest
+        run: |
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install pytest
         # Jenkins installs BOTH files; your current yml only installs requirements-dev.txt
 
       # ── Test ─────────────────────────────────────────────────────────────
